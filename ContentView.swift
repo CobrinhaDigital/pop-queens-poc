@@ -66,7 +66,7 @@ extension UIDevice {
 
 //aqui seria ChessTable
 struct ContentView: View {
-    @State var chessTable: ChessTableModel = .init(rows: 8, columns: 8)
+    @State var chessTable: ChessTableModel = .init(rows: 4, columns: 4)
     @State var coordsX: [(line: Int, column: Int)] = []
     @State var colisions: [(line: Int, column: Int)] = []
     @State var tapCount: Int = 0
@@ -133,10 +133,11 @@ struct ContentView: View {
             if resultSubmit != "" {
                 Text("\(resultSubmit)")
                 .font(.title3)
-                .foregroundStyle(isSolved ? .blue : .red)
+                .foregroundStyle(isSolved ? .green : .red)
 //                .animation(isSolved ? .bouncy : .easeIn, value: isSolved)
                 .transition(isSolved ? .scale : .slide)
                 .padding(.vertical, 2.5)
+                .bold()
             }
             LazyVGrid(columns: Array(repeating: GridItem(.fixed(50), spacing: 0), count: chessTable.columns), spacing: 0) {
                 ForEach(chessTable.tiles.indices, id: \.self) { index in
@@ -246,8 +247,6 @@ struct ContentView: View {
                         - O número de linhas e de colunas é igual ao número de rainhas 
                     
                         - Não é necessário limpar o tabuleiro para tentar de novo
-                    
-                        - Imagine um movimento em L e coloque a rainha lá 
                     """)
                     .padding(.horizontal)
                 })
@@ -308,7 +307,8 @@ struct ContentView: View {
                             if resultLineColumn == true || resultDiagonal == true && tapCount == 7 {
                                 isSolved = false
                                 return resultSubmit = "Opa, não é bem por aí... 😕"
-                            } else {
+                            }
+                            if resultDiagonal == false || resultLineColumn != true {
                                 isSolved = true
                                 return resultSubmit = "Parabéns, você resolveu o desafio! 🥳"
                             }
