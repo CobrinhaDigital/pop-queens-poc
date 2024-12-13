@@ -1,3 +1,4 @@
+import UIKit
 import SwiftUI
 import AVFoundation
 
@@ -66,7 +67,7 @@ extension UIDevice {
 
 //aqui seria ChessTable
 struct ContentView: View {
-    @State var chessTable: ChessTableModel = .init(rows: 4, columns: 4)
+    @State var chessTable: ChessTableModel = .init(rows: 7, columns: 7)
     @State var coordsX: [(line: Int, column: Int)] = []
     @State var colisions: [(line: Int, column: Int)] = []
     @State var tapCount: Int = 0
@@ -241,13 +242,16 @@ struct ContentView: View {
                 .frame(width: 150, height: 50)
                 .background(Color.orange.opacity(0.8).clipShape(.capsule))
                 .sheet(isPresented: $isTipsPresented, content: {
-                    Text("""
-                        - As rainhas não podem ficar nem na mesma coluna nem na mesma linha 
-                    
-                        - O número de linhas e de colunas é igual ao número de rainhas 
-                    
-                        - Não é necessário limpar o tabuleiro para tentar de novo
-                    """)
+                    Text("Dicas")
+                        .font(.largeTitle)
+                        .padding()
+                        .bold()
+                    VStack {
+                        Text("- As rainhas não podem ficar nem na mesma coluna nem na mesma linha")
+                            .padding(.bottom, 10)
+                        Text("- O número de linhas e de colunas é igual ao número de rainhas")
+                            .padding(.bottom, 10)
+                    }
                     .padding(.horizontal)
                 })
                 Button("Regras") {
@@ -259,21 +263,26 @@ struct ContentView: View {
                 .frame(width: 150, height: 50)
                 .background(Color.green.opacity(0.9).clipShape(.capsule))
                 .sheet(isPresented: $isRulesPresented, content: {
+                    Text("Regras")
+                        .bold()
+                        .font(.largeTitle)
                     Image("queen_positions")
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .frame(maxWidth: 300, maxHeight: 300)
                         .padding(.bottom, 20)
                         .accessibilityLabel("Imagem que mostra as direções que uma rainha pode percorrer, que são vertical, horizontal e diagonal.")
-                    Text("""
-                        - Posicione \(chessTable.rows) rainhas em um tabuleiro \(chessTable.columns)x\(chessTable.rows)
-                    
-                        - Elas não podem se atacar 
-                    
-                        - Aperte uma vez para colocar uma rainha
-                    
-                        - Aperte duas vezes para remover uma rainha
-                    """)
+                    VStack {
+                        Text("""
+                            - Posicione \(chessTable.rows) rainhas em um tabuleiro \(chessTable.columns)x\(chessTable.rows)
+                        
+                            - Elas não podem se atacar 
+                        
+                            - Aperte uma vez para colocar uma rainha
+                        
+                            - Aperte duas vezes para remover uma rainha
+                        """)
+                    }
                 })
             }
             .padding()
