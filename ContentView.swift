@@ -67,7 +67,7 @@ extension UIDevice {
 
 //aqui seria ChessTable
 struct ContentView: View {
-    @State var chessTable: ChessTableModel = .init(rows: 7, columns: 7)
+    @State var chessTable: ChessTableModel = .init(rows: 4, columns: 4)
     @State var coordsX: [(line: Int, column: Int)] = []
     @State var colisions: [(line: Int, column: Int)] = []
     @State var tapCount: Int = 0
@@ -143,6 +143,7 @@ struct ContentView: View {
             LazyVGrid(columns: Array(repeating: GridItem(.fixed(50), spacing: 0), count: chessTable.columns), spacing: 0) {
                 ForEach(chessTable.tiles.indices, id: \.self) { index in
                     Rectangle()
+                        .border(.black, width: 1)
                         .aspectRatio(1, contentMode: .fill)
                         .foregroundStyle((chessTable.tiles[index].line + chessTable.tiles[index].column) % 2 == 0 ? .purple : .mint)
                         .overlay {
@@ -313,11 +314,11 @@ struct ContentView: View {
                         print(resultDiagonal, resultLineColumn)
                         
                         withAnimation {
-                            if resultLineColumn == true || resultDiagonal == true && tapCount == 7 {
+                            if resultLineColumn == true || resultDiagonal == true {
                                 isSolved = false
                                 return resultSubmit = "Opa, não é bem por aí... 😕"
                             }
-                            if resultDiagonal == false || resultLineColumn != true {
+                            if resultDiagonal == false || resultLineColumn == false {
                                 isSolved = true
                                 return resultSubmit = "Parabéns, você resolveu o desafio! 🥳"
                             }
