@@ -44,3 +44,19 @@
 //    var width: CGFloat
 //    var tapCount: Int
 //}
+
+import SwiftUI
+
+struct Diva: View {
+    var isSelected: Bool
+    let name: String
+    let image: Image
+    
+    var body: some View {
+        image
+    }
+}
+
+#Preview {
+    Diva(isSelected: false, name: "rita", image: Image(.ritaFace))
+}
