@@ -130,46 +130,11 @@ struct ContentView: View {
             Image(.gradiente)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             VStack {
-                HStack(spacing: 15) {
-                    Diva(isSelected: false, name: "rita", image: Image(.ritaFace).resizable()
-                    )
-                    .padding(.trailing, 5)
-                    .frame(maxWidth: 65, maxHeight: 60)
-//                    .onTapGesture {
-//                        isSelected = true
-//                        
-//                        UIDevice.vibrate()
-//                    }
-                    Diva(isSelected: false, name: "rose", image: Image(.roseFace).resizable())
-                        .frame(maxWidth: 50, maxHeight: 70)
-//                        .onTapGesture {
-//                            isSelected = true
-//                            selectedQueen = Image(.roseFace)
-//                            UIDevice.vibrate()
-//                        }
-                    Diva(isSelected: false, name: "rebeca", image: Image(.rebecaFace).resizable())
-                        .frame(maxWidth: 68, maxHeight: 65)
-//                        .onTapGesture {
-//                            isSelected = true
-//                            selectedQueen = Image(.rebecaFace)
-//                            UIDevice.vibrate()
-//                        }
-                    Diva(isSelected: false, name: "rachel", image: Image(.rachelFace)
-                        .resizable()
-                    )
-                    .frame(maxWidth: 50, maxHeight: 70)
-//                    .onTapGesture {
-//                        isSelected = true
-//                        selectedQueen = Image(.rachelFace)
-//                        UIDevice.vibrate()
-//                    }
-                }
-                .padding(.trailing, 5)
+                DivaView()
                 if resultSubmit != "" {
                     Text("\(resultSubmit)")
                     .font(.title3)
                     .foregroundStyle(isSolved ? .green : .red)
-    //                .animation(isSolved ? .bouncy : .easeIn, value: isSolved)
                     .transition(isSolved ? .scale : .slide)
                     .padding(.vertical, 2.5)
                     .bold()

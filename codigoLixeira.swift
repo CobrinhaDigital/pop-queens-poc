@@ -47,16 +47,47 @@
 
 import SwiftUI
 
-struct Diva: View {
-    var isSelected: Bool
-    let name: String
-    let image: Image
+struct DivaView: View {
+    struct Diva: Identifiable {
+        let id = UUID()
+        let name: String
+        let image: Image
+        let defaultSize: CGSize
+        let selectedSize: CGSize
+    }
+    
+    @State private var isSelectedByID: UUID?
+    @State private var tapCount: Int = 0
+    
+    let divas = [
+        Diva(name: "rita", image: Image(.ritaFace), defaultSize: CGSize(width: 65, height: 60), selectedSize: CGSize(width: 75, height: 70)),
+        Diva(name: "rebeca", image: Image(.rebecaFace), defaultSize: CGSize(width: 70, height: 65), selectedSize: CGSize(width: 80, height: 75)),
+        Diva(name: "rose", image: Image(.roseFace), defaultSize: CGSize(width: 55, height: 70), selectedSize: CGSize(width: 65, height: 85)),
+        Diva(name: "rachel", image: Image(.rachelFace), defaultSize: CGSize(width: 55, height: 70), selectedSize: CGSize(width: 65, height: 85))
+    ]
     
     var body: some View {
-        image
+        HStack {
+            ForEach(divas) { diva in
+                diva.image
+                    .resizable()
+                    .contentShape(.rect)
+                    .onTapGesture {
+                        if tapCount % 2 == 0 {
+                            isSelectedByID = diva.id
+                        } else {
+                            isSelectedByID = nil
+                        }
+                        tapCount += 1
+                    }
+                    .frame(maxWidth: (isSelectedByID == diva.id) ? diva.selectedSize.width : diva.defaultSize.width, maxHeight: (isSelectedByID == diva.id) ?  diva.selectedSize.height : diva.defaultSize.height)
+                    .animation(.easeInOut, value: isSelectedByID)
+                    .shadow(radius: 5)
+            }
+        }
     }
 }
 
 #Preview {
-    Diva(isSelected: false, name: "rita", image: Image(.ritaFace))
+    DivaView()
 }
