@@ -48,13 +48,7 @@
 import SwiftUI
 
 struct DivaView: View {
-    struct Diva: Identifiable {
-        let id = UUID()
-        let name: String
-        let image: Image
-        let defaultSize: CGSize
-        let selectedSize: CGSize
-    }
+
     
     @State private var isSelectedByID: UUID?
     @State private var tapCount: Int = 0

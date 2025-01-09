@@ -5,7 +5,15 @@ import AVFoundation
 struct ChessTileModel {
     let line: Int
     let column: Int
-    var string: String?
+    var image: Image?
+}
+
+struct Diva: Identifiable {
+    let id = UUID()
+    let name: String
+    let image: Image
+    let defaultSize: CGSize
+    let selectedSize: CGSize
 }
 
 //tipo equatable para que eu possa comparar se uma rainha eh igual a outra
@@ -77,6 +85,16 @@ struct ContentView: View {
     @State var tapToPlace = 0
     @State var queens: [Queen] = []
     @State var resultSubmit = ""
+    @State var selectedimage: Image?
+    @State private var isSelectedByID: UUID?
+    @State private var tapCountDiva: Int = 0
+    
+    let divas = [
+        Diva(name: "rita", image: Image(.ritaFace), defaultSize: CGSize(width: 65, height: 60), selectedSize: CGSize(width: 75, height: 70)),
+        Diva(name: "rebeca", image: Image(.rebecaFace), defaultSize: CGSize(width: 75, height: 65), selectedSize: CGSize(width: 80, height: 75)),
+        Diva(name: "rose", image: Image(.roseFace), defaultSize: CGSize(width: 55, height: 70), selectedSize: CGSize(width: 65, height: 85)),
+        Diva(name: "rachel", image: Image(.rachelFace), defaultSize: CGSize(width: 55, height: 72), selectedSize: CGSize(width: 65, height: 85))
+    ]
     
     func hasCollision(_ index: Int) -> Bool {
         colisions.contains(where: { colision in
@@ -130,7 +148,30 @@ struct ContentView: View {
             Image(.gradiente)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             VStack {
-                DivaView()
+                HStack {
+                    ForEach(divas) { diva in
+                        diva.image
+                            .resizable()
+                            .contentShape(.rect)
+                            .onTapGesture {
+                                //clicar duas vezes na mesma diva nao diminui o tamanho dela
+                                //apenas ao clicar em outra diva, que por sua vez aumenta enquanto a antiga diminui
+                                if tapCount % 2 == 0 {
+                                    isSelectedByID = diva.id
+                                    selectedimage = diva.image
+                                } else {
+                                    isSelectedByID = nil
+                                    selectedimage = nil
+                                }
+                                tapCountDiva += 1
+                                print(tapCountDiva)
+                            }
+                            .frame(maxWidth: (isSelectedByID == diva.id) ? diva.selectedSize.width : diva.defaultSize.width, maxHeight: (isSelectedByID == diva.id) ?  diva.selectedSize.height : diva.defaultSize.height)
+                            .animation(.easeInOut, value: isSelectedByID)
+                            .shadow(radius: 5)
+                            .padding(.leading, diva.name == "rachel" ? 5 : 0)
+                    }
+                }
                 if resultSubmit != "" {
                     Text("\(resultSubmit)")
                     .font(.title3)
@@ -146,21 +187,33 @@ struct ContentView: View {
                             .aspectRatio(1, contentMode: .fill)
                             .foregroundStyle((chessTable.tiles[index].line + chessTable.tiles[index].column) % 2 == 0 ? .purple : .mint)
                             .overlay {
-                                if let mark = chessTable.tiles[index].string {
-                                    Text(mark)
-                                        .foregroundStyle(.black)
-                                        .font(.system(size: 50))
-                                        .bold()
+//                                if let mark = chessTable.tiles[index].image {
+//
+//                                }
+                                //codigo abaixo feito pelo chatgpt, ele tem mania de usar map
+                                //iteracao desnecessaria
+                                //aplicar overlay apenas em
+                                chessTable.tiles[index].image.map { image in
+                                    image
+                                        .resizable()
+                                        .scaledToFit()
+                                        .padding(.all, 5)
                                 }
+//                                selectedimage?.resizable().scaledToFit()
+//                                selectedimage
+//                                    .resizable()
+//                                    .scaledToFit()
+//                                print(selectedimage)
                             }
                             .border(hasCollision(index) ? .red : .clear, width: 5)
                             .onTapGesture {
                                 UIDevice.vibrate()
                                 if let existentIndex = queens.firstIndex(where: {chessTable.tiles[index].line == $0.position.line && chessTable.tiles[index].column == $0.position.column} ){
-                                    chessTable.tiles[index].string = ""
+                                    chessTable.tiles[index].image = nil
                                     queens.remove(at: existentIndex)
                                     coordsX.remove(at: existentIndex)
                                     tapToPlace -= 1
+                                    print(tapToPlace)
                                 } else {
                                     if tapToPlace <= chessTable.columns - 1 {
                                         let newQueen = Queen(
@@ -169,11 +222,14 @@ struct ContentView: View {
                                                 column: chessTable.tiles[index].column
                                             )
                                         )
-                                        chessTable.tiles[index].string = "♛"
+                                        chessTable.tiles[index].image = selectedimage
+//                                        chessTable.tiles[index].string = "♛"
                                         coordsX.append((chessTable.tiles[index].line, chessTable.tiles[index].column))
                                         queens.append(newQueen)
                                         tapToPlace += 1
-                                        print(coordsX)
+                                        selectedimage = nil
+//                                        print(coordsX)
+                                        print(tapToPlace)
                                     }
                                     Task {
                                         let queen = queens[queens.count - 1]
@@ -240,8 +296,10 @@ struct ContentView: View {
                         resultSubmit = ""
                         tapCount = 0
                         tapToPlace = 0
+                        selectedimage = nil
+                        isSelectedByID = nil  
                         for index in chessTable.tiles.indices {
-                            chessTable.tiles[index].string = ""
+                            chessTable.tiles[index].image = nil
                         }
                     }
                     .frame(width: 150, height: 50)
