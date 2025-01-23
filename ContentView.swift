@@ -90,12 +90,13 @@ struct ContentView: View {
     @State var selectedByID: UUID?
     @State var tapCountDiva: Int = 0
     @State var placedDivas: Set<String> = []
+
     
     let divas = [
-        Diva(name: "rita", image: Image(.ritaFace), defaultSize: CGSize(width: 65, height: 60), selectedSize: CGSize(width: 75, height: 70)),
-        Diva(name: "rebeca", image: Image(.rebecaFace), defaultSize: CGSize(width: 75, height: 65), selectedSize: CGSize(width: 80, height: 75)),
-        Diva(name: "rose", image: Image(.roseFace), defaultSize: CGSize(width: 55, height: 70), selectedSize: CGSize(width: 65, height: 85)),
-        Diva(name: "rachel", image: Image(.rachelFace), defaultSize: CGSize(width: 55, height: 72), selectedSize: CGSize(width: 65, height: 85))
+        Diva(name: "rita", image: Image(.ritaFace), defaultSize: CGSize(width: 95, height: 93), selectedSize: CGSize(width: 110, height: 105)),
+        Diva(name: "rebeca", image: Image(.rebecaFace), defaultSize: CGSize(width: 108, height: 100), selectedSize: CGSize(width: 118, height: 110)),
+        Diva(name: "rose", image: Image(.roseFace), defaultSize: CGSize(width: 80, height: 105), selectedSize: CGSize(width: 95, height: 115)),
+        Diva(name: "rachel", image: Image(.rachelFace), defaultSize: CGSize(width: 80, height: 110), selectedSize: CGSize(width: 95, height: 125))
     ]
     
     func hasCollision(_ index: Int) -> Bool {
@@ -147,8 +148,7 @@ struct ContentView: View {
     
     var body: some View {
         ZStack {
-            Image(.gradiente)
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
+            LinearGradient(colors: [Color(.rosa), .purple, Color(.azul), .cyan], startPoint: .topLeading, endPoint: .bottomTrailing)
             VStack {
                 HStack {
                     ForEach(divas) { diva in
@@ -186,7 +186,7 @@ struct ContentView: View {
                     .padding(.vertical, 2.5)
                     .bold()
                 }
-                LazyVGrid(columns: Array(repeating: GridItem(.fixed(90), spacing: 0), count: chessTable.columns), spacing: 0) {
+                LazyVGrid(columns: Array(repeating: GridItem(.fixed(130), spacing: 0), count: chessTable.columns), spacing: 0) {
                     ForEach(chessTable.tiles.indices, id: \.self) { index in
                         Rectangle()
                             .border(.black, width: 1)
@@ -308,6 +308,7 @@ struct ContentView: View {
                             chessTable.tiles[index].image = nil
                         }
                     }
+//                    .shadow(radius: 50)
                     .frame(width: 150, height: 50)
                     .background(Color.red.opacity(0.8))
                     .clipShape(.capsule)
@@ -345,5 +346,6 @@ struct ContentView: View {
             }
         }
         .ignoresSafeArea()
+        .scaledToFill()
     }
 }
