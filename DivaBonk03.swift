@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct DivaBon03: View {
+struct DivaBonk03: View {
     var body: some View {
         ZStack {
             RadialGradient(colors: [Color(.azul), Color(.rosa)], center: .center, startRadius: 500, endRadius: 100)
@@ -21,5 +21,5 @@ struct DivaBon03: View {
 }
 
 #Preview {
-    DivaBon03()
+    DivaBonk03()
 }

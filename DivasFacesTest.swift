@@ -8,7 +8,7 @@
 
 import SwiftUI
 
-struct DivaView: View {
+struct DivasFacesTest: View {
 
     
     @State private var isSelectedByID: UUID?
@@ -44,5 +44,5 @@ struct DivaView: View {
 }
 
 #Preview {
-    DivaView()
+    DivasFacesTest()
 }

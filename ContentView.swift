@@ -8,10 +8,10 @@ struct ChessTileModel {
     var image: Image?
 }
 
-struct Diva: Identifiable {
+struct Diva: Equatable, Identifiable {
     let id = UUID()
     let name: String
-    let image: Image
+    var image: Image
     let defaultSize: CGSize
     let selectedSize: CGSize
 }
@@ -86,18 +86,16 @@ struct ContentView: View {
     @State var queens: [Queen] = []
     @State var resultSubmit = ""
     @State var selectedImage: Image?
-    @State var selectedName: String?
-    @State var selectedByID: UUID?
+    @State var selectedDiva: Diva?
     @State var tapCountDiva: Int = 0
     @State var placedDivas: Set<String> = []
 
-    
-    let divas = [
+    let divas: [Diva] = .init([
         Diva(name: "rita", image: Image(.ritaFace), defaultSize: CGSize(width: 95, height: 93), selectedSize: CGSize(width: 110, height: 105)),
         Diva(name: "rebeca", image: Image(.rebecaFace), defaultSize: CGSize(width: 108, height: 100), selectedSize: CGSize(width: 118, height: 110)),
         Diva(name: "rose", image: Image(.roseFace), defaultSize: CGSize(width: 80, height: 105), selectedSize: CGSize(width: 95, height: 115)),
         Diva(name: "rachel", image: Image(.rachelFace), defaultSize: CGSize(width: 80, height: 110), selectedSize: CGSize(width: 95, height: 125))
-    ]
+    ])
     
     func hasCollision(_ index: Int) -> Bool {
         colisions.contains(where: { colision in
@@ -157,22 +155,20 @@ struct ContentView: View {
                                 .resizable()
                                 .contentShape(.rect)
                                 .onTapGesture {
-                                    //clicar duas vezes na mesma diva nao diminui o tamanho dela
-                                    //apenas ao clicar em outra diva, que por sua vez aumenta enquanto a antiga diminui
-                                    if tapCount % 2 == 0 {
-                                        selectedByID = diva.id
+                                    if tapCountDiva % 2 == 0 {
+                                        selectedDiva = diva
                                         selectedImage = diva.image
-                                        selectedName = diva.name
+//                                        print("selectedDiva: ", selectedDiva!.name, "selectedImage: ", selectedImage!)
                                     } else {
-                                        selectedByID = nil
+                                        selectedDiva = nil
                                         selectedImage = nil
-                                        selectedName = nil
+//                                        print("selectedDiva: ", selectedDiva!.name, "selectedImage: ", selectedImage!)
                                     }
                                     tapCountDiva += 1
-                                    print(tapCountDiva)
+                                    print("tapCountDiva: ", tapCountDiva)
                                 }
-                                .frame(maxWidth: (selectedByID == diva.id) ? diva.selectedSize.width : diva.defaultSize.width, maxHeight: (selectedByID == diva.id) ?  diva.selectedSize.height : diva.defaultSize.height)
-                                .animation(.easeInOut, value: selectedByID)
+                                .frame(maxWidth: (selectedDiva == diva) ? diva.selectedSize.width : diva.defaultSize.width, maxHeight: (selectedDiva == diva) ?  diva.selectedSize.height : diva.defaultSize.height)
+                                .animation(.easeInOut, value: selectedDiva)
                                 .shadow(radius: 5)
                                 .padding(.leading, diva.name == "rachel" ? 5 : 0)
                         }
@@ -191,7 +187,7 @@ struct ContentView: View {
                         Rectangle()
                             .border(.black, width: 1)
                             .aspectRatio(1, contentMode: .fill)
-                            .foregroundStyle((chessTable.tiles[index].line + chessTable.tiles[index].column) % 2 == 0 ? .purple : .mint)
+                            .foregroundStyle((chessTable.tiles[index].line + chessTable.tiles[index].column) % 2 == 0 ? RadialGradient(colors: [.white, .purple], center: .center, startRadius: 5, endRadius: 90) : RadialGradient(colors: [Color(.verdeCiano), .mint], center: .center, startRadius: 10, endRadius: 90))
                             .overlay {
 //                                if let mark = chessTable.tiles[index].image {
 //
@@ -209,33 +205,43 @@ struct ContentView: View {
                             .border(hasCollision(index) ? .red : .clear, width: 5)
                             .onTapGesture {
                                 UIDevice.vibrate()
-                                if let existentIndex = queens.firstIndex(where: {chessTable.tiles[index].line == $0.position.line && chessTable.tiles[index].column == $0.position.column} ){
-                                    chessTable.tiles[index].image = nil
-                                    queens.remove(at: existentIndex)
-                                    coordsX.remove(at: existentIndex)
-                                    tapToPlace -= 1
-                                    placedDivas.remove(selectedName!)
-                                    print(placedDivas)
-                                    print(tapToPlace)
-                                } else {
-                                    if tapToPlace <= chessTable.columns - 1 {
-                                        let newQueen = Queen(
-                                            position: (
-                                                line: chessTable.tiles[index].line,
-                                                column: chessTable.tiles[index].column
+                                if selectedDiva != nil {
+                                    if let existentIndex = queens.firstIndex(where: {chessTable.tiles[index].line == $0.position.line && chessTable.tiles[index].column == $0.position.column}) {
+                                        chessTable.tiles[index].image = nil
+                                        queens.remove(at: existentIndex)
+                                        coordsX.remove(at: existentIndex)
+                                        tapToPlace -= 1
+                                        placedDivas.remove(selectedDiva?.name ?? "")
+                                        print("placedDivas if: ", placedDivas)
+                                        print("tapToPlace if: ",tapToPlace)
+    //                                    print("antes do nil em selectedDiva", selectedDiva!.name)
+                                        
+    //                                    print("depois do nil em selectedDiva", selectedDiva!.name)
+                                    } else {
+                                        if tapToPlace <= chessTable.columns - 1 && !placedDivas.contains(selectedDiva?.name ?? "") {
+                                            let newQueen = Queen(
+                                                position: (
+                                                    line: chessTable.tiles[index].line,
+                                                    column: chessTable.tiles[index].column
+                                                )
                                             )
-                                        )
-                                        chessTable.tiles[index].image = selectedImage
-//                                        chessTable.tiles[index].string = "♛"
-                                        coordsX.append((chessTable.tiles[index].line, chessTable.tiles[index].column))
-                                        queens.append(newQueen)
-                                        placedDivas.insert(selectedName!)
-                                        tapToPlace += 1
-                                        selectedImage = nil
-                                        print(placedDivas)
-//                                        print(coordsX)
-                                        print(tapToPlace)
-                                    }
+                                            chessTable.tiles[index].image = selectedImage
+    //                                        chessTable.tiles[index].string = "♛"
+                                            coordsX.append((chessTable.tiles[index].line, chessTable.tiles[index].column))
+                                            queens.append(newQueen)
+                                            placedDivas.insert(selectedDiva?.name ?? "")
+                                            tapToPlace += 1
+                                            tapCountDiva -= 1
+                                            selectedImage = nil
+    //                                        print("antes do nil em selectedDiva", selectedDiva!)
+                                            selectedDiva = nil
+    //                                        print("depois do nil em selectedDiva", selectedDiva!)
+    //                                        selectedDiva?.image = nil
+                                            print("placedDivas else: ", placedDivas)
+    //                                        print(coordsX)
+                                            print("tapToPlace else: ",tapToPlace)
+                                        }
+                                }
                                     Task {
                                         let queen = queens[queens.count - 1]
                                         
@@ -288,6 +294,7 @@ struct ContentView: View {
                     }
                     .accessibilityLabel("Tabuleiro de xadrez \(chessTable.rows)x\(chessTable.columns)")
                 }
+                .shadow(radius: 2.5)
                 .padding()
                 .onAppear() {
                     chessTable.createTiles()
@@ -302,7 +309,6 @@ struct ContentView: View {
                         tapCount = 0
                         tapToPlace = 0
                         selectedImage = nil
-                        selectedByID = nil
                         placedDivas.removeAll()
                         for index in chessTable.tiles.indices {
                             chessTable.tiles[index].image = nil
@@ -347,5 +353,6 @@ struct ContentView: View {
         }
         .ignoresSafeArea()
         .scaledToFill()
+        .previewInterfaceOrientation(.landscapeRight)
     }
 }
