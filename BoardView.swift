@@ -10,8 +10,6 @@ import SwiftUI
 struct BoardView: View {
     var body: some View {
         ZStack {
-            Image(.gradiente)
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
             VStack {
                 HStack {
                     Image(.ritaFace)

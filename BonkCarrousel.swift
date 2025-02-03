@@ -8,11 +8,9 @@
 import SwiftUI
 
 struct BonkCarrousel: View {
-    
+    @State var bonkCount: Bool = false
     var body: some View {
-        NavigationStack {
-            DivaBonk01()
-        }
+        Text("")
     }
 }
 
