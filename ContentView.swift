@@ -2,72 +2,6 @@ import UIKit
 import SwiftUI
 import AVFoundation
 
-struct ChessTileModel {
-    let line: Int
-    let column: Int
-    var image: Image?
-}
-
-struct Diva: Equatable, Identifiable {
-    let id = UUID()
-    let name: String
-    var image: Image
-    let defaultSize: CGSize
-    let selectedSize: CGSize
-}
-
-//tipo equatable para que eu possa comparar se uma rainha eh igual a outra
-class Queen: Equatable {
-    var upperLeftDiagonal: [(line: Int, column: Int)] = [] //(-,-)
-    var lowerLeftDiagonal: [(line: Int, column: Int)] = [] //(+,-)
-    var upperRightDiagonal: [(line: Int, column: Int)] = [] //(+,-)
-    var lowerRightDiagonal: [(line: Int, column: Int)] = [] //(+,+)
-    let position: (line: Int, column: Int)
-    var diva: Diva?
-    
-    init(position: (line: Int, column: Int)) {
-        self.position = position
-    }
-    
-    //aqui eu verifico se existe uma rainha na diagonal sendo analisada
-    func containQueenInDiagonal(queen: Queen) -> Bool {
-        let result: Bool = false //começo com falso pq nao sei se existe ou nao ainda
-        
-        //percorro a diagonal comparada e verifico se existe uma rainha que esta posicionada la
-        let diagonals = [upperLeftDiagonal, lowerLeftDiagonal, upperRightDiagonal, lowerRightDiagonal]
-        
-        for diagonal in diagonals {
-            if diagonal.contains(where: { $0 == queen.position }) {
-                return true
-            }
-        }
-        //por fim retorno o resultado
-        //falso caso nao tenha rainha na diagonal analisada
-        //verdadeiro caso tenha
-        return result
-    }
-    
-    static func == (lhs: Queen, rhs: Queen) -> Bool {
-        lhs.position == rhs.position
-    }
-}
-
-
-struct ChessTableModel {
-    let rows: Int
-    let columns: Int
-    
-    var tiles: [ChessTileModel] = []
-    
-    mutating func createTiles() {
-        for i in 0..<rows {
-            for j in 0..<columns {
-                tiles.append(ChessTileModel(line: i, column: j))
-            }
-        }
-    }
-}
-
 extension UIDevice {
     static func vibrate() {
         AudioServicesPlaySystemSound(kSystemSoundID_Vibrate)
@@ -196,9 +130,6 @@ struct ContentView: View {
     //                                if let mark = chessTable.tiles[index].image {
     //
     //                                }
-                                    //codigo abaixo feito pelo chatgpt, ele tem mania de usar map
-                                    //iteracao desnecessaria
-                                    //aplicar overlay apenas no tile clicado, atribuindo a imagem correspondente
                                     chessTable.tiles[index].image.map { image in
                                         image
                                             .resizable()
@@ -387,9 +318,6 @@ struct ContentView: View {
         chessTable.tiles[index].image = nil
         placedDivas.remove(diva.name)
         print(placedDivas)
-//        if placedDivas.contains(diva.name){
-//            print("A diva ta no tabuleiro")
-//        }
     }
 }
 

@@ -9,7 +9,6 @@
 import SwiftUI
 
 struct DivasFacesTest: View {
-
     
     @State private var isSelectedByID: UUID?
     @State private var tapCount: Int = 0
