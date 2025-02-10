@@ -23,6 +23,7 @@ class Queen: Equatable {
     var upperRightDiagonal: [(line: Int, column: Int)] = [] //(+,-)
     var lowerRightDiagonal: [(line: Int, column: Int)] = [] //(+,+)
     let position: (line: Int, column: Int)
+    var diva: Diva?
     
     init(position: (line: Int, column: Int)) {
         self.position = position
@@ -88,6 +89,7 @@ struct ContentView: View {
     @State var selectedImage: Image?
     @State var selectedDiva: Diva?
     @State var tapCountDiva: Int = 0
+    @State var tapCountDivaOnBoard: [Diva.ID : Int] = [:]
     @State var placedDivas: Set<String> = []
 
     let divas: [Diva] = .init([
@@ -145,214 +147,252 @@ struct ContentView: View {
     }
     
     var body: some View {
-        ZStack {
-            LinearGradient(colors: [Color(.rosa), .purple, Color(.azul), .cyan], startPoint: .topLeading, endPoint: .bottomTrailing)
-            VStack {
-                HStack {
-                    ForEach(divas) { diva in
-                        if !placedDivas.contains(diva.name) {
-                            diva.image
-                                .resizable()
-                                .contentShape(.rect)
-                                .onTapGesture {
-                                    if tapCountDiva % 2 == 0 {
-                                        selectedDiva = diva
-                                        selectedImage = diva.image
-//                                        print("selectedDiva: ", selectedDiva!.name, "selectedImage: ", selectedImage!)
-                                    } else {
-                                        selectedDiva = nil
-                                        selectedImage = nil
-//                                        print("selectedDiva: ", selectedDiva!.name, "selectedImage: ", selectedImage!)
-                                    }
-                                    tapCountDiva += 1
-                                    print("tapCountDiva: ", tapCountDiva)
-                                }
-                                .frame(maxWidth: (selectedDiva == diva) ? diva.selectedSize.width : diva.defaultSize.width, maxHeight: (selectedDiva == diva) ?  diva.selectedSize.height : diva.defaultSize.height)
-                                .animation(.easeInOut, value: selectedDiva)
-                                .shadow(radius: 5)
-                                .padding(.leading, diva.name == "rachel" ? 5 : 0)
-                        }
-                    }
-                }
-                if resultSubmit != "" {
-                    Text("\(resultSubmit)")
-                    .font(.title3)
-                    .foregroundStyle(isSolved ? .green : .red)
-                    .transition(isSolved ? .scale : .slide)
-                    .padding(.vertical, 2.5)
-                    .bold()
-                }
-                LazyVGrid(columns: Array(repeating: GridItem(.fixed(130), spacing: 0), count: chessTable.columns), spacing: 0) {
-                    ForEach(chessTable.tiles.indices, id: \.self) { index in
-                        Rectangle()
-                            .border(.black, width: 1)
-                            .aspectRatio(1, contentMode: .fill)
-                            .foregroundStyle((chessTable.tiles[index].line + chessTable.tiles[index].column) % 2 == 0 ? RadialGradient(colors: [.white, .purple], center: .center, startRadius: 5, endRadius: 90) : RadialGradient(colors: [Color(.verdeCiano), .mint], center: .center, startRadius: 10, endRadius: 90))
-                            .overlay {
-//                                if let mark = chessTable.tiles[index].image {
-//
-//                                }
-                                //codigo abaixo feito pelo chatgpt, ele tem mania de usar map
-                                //iteracao desnecessaria
-                                //aplicar overlay apenas no tile clicado, atribuindo a imagem correspondente
-                                chessTable.tiles[index].image.map { image in
-                                    image
-                                        .resizable()
-                                        .scaledToFit()
-                                        .padding(.all, 5)
-                                }
-                            }
-                            .border(hasCollision(index) ? .red : .clear, width: 5)
-                            .onTapGesture {
-                                UIDevice.vibrate()
-                                if selectedDiva != nil {
-                                    if let existentIndex = queens.firstIndex(where: {chessTable.tiles[index].line == $0.position.line && chessTable.tiles[index].column == $0.position.column}) {
-                                        chessTable.tiles[index].image = nil
-                                        queens.remove(at: existentIndex)
-                                        coordsX.remove(at: existentIndex)
-                                        tapToPlace -= 1
-                                        placedDivas.remove(selectedDiva?.name ?? "")
-                                        print("placedDivas if: ", placedDivas)
-                                        print("tapToPlace if: ",tapToPlace)
-    //                                    print("antes do nil em selectedDiva", selectedDiva!.name)
-                                        
-    //                                    print("depois do nil em selectedDiva", selectedDiva!.name)
-                                    } else {
-                                        if tapToPlace <= chessTable.columns - 1 && !placedDivas.contains(selectedDiva?.name ?? "") {
-                                            let newQueen = Queen(
-                                                position: (
-                                                    line: chessTable.tiles[index].line,
-                                                    column: chessTable.tiles[index].column
-                                                )
-                                            )
-                                            chessTable.tiles[index].image = selectedImage
-    //                                        chessTable.tiles[index].string = "♛"
-                                            coordsX.append((chessTable.tiles[index].line, chessTable.tiles[index].column))
-                                            queens.append(newQueen)
-                                            placedDivas.insert(selectedDiva?.name ?? "")
-                                            tapToPlace += 1
-                                            tapCountDiva -= 1
-                                            selectedImage = nil
-    //                                        print("antes do nil em selectedDiva", selectedDiva!)
+        NavigationStack {
+            ZStack {
+                LinearGradient(colors: [Color(.rosa), .purple, Color(.azul), .cyan], startPoint: .topLeading, endPoint: .bottomTrailing)
+                VStack {
+                    HStack {
+                        ForEach(divas) { diva in
+                            if !placedDivas.contains(diva.name) {
+                                diva.image
+                                    .resizable()
+                                    .contentShape(.rect)
+                                    .onTapGesture {
+                                        if tapCountDiva % 2 == 0 {
+                                            selectedDiva = diva
+                                            selectedImage = diva.image
+    //                                        print("selectedDiva: ", selectedDiva!.name, "selectedImage: ", selectedImage!)
+                                        } else {
                                             selectedDiva = nil
-    //                                        print("depois do nil em selectedDiva", selectedDiva!)
-    //                                        selectedDiva?.image = nil
-                                            print("placedDivas else: ", placedDivas)
-    //                                        print(coordsX)
-                                            print("tapToPlace else: ",tapToPlace)
+                                            selectedImage = nil
+    //                                        print("selectedDiva: ", selectedDiva!.name, "selectedImage: ", selectedImage!)
                                         }
-                                }
-                                    Task {
-                                        let queen = queens[queens.count - 1]
-                                        
-                                        //esquerda superior
-                                        var upperLeftNextX = chessTable.tiles[index].line - 1
-                                        var upperLeftNextY = chessTable.tiles[index].column - 1
-                                        while (
-                                            upperLeftNextX >= 0 && upperLeftNextY >= 0
-                                        ) {
-                                            queen.upperLeftDiagonal.append((upperLeftNextX, upperLeftNextY))
-                                            upperLeftNextX -= 1
-                                            upperLeftNextY -= 1
-                                        }
-                                        
-                                        //direita superior
-                                        var upperRightNextX = chessTable.tiles[index].line - 1
-                                        var upperRightNextY = chessTable.tiles[index].column + 1
-                                        while (
-                                            upperRightNextX >= 0 && upperRightNextY < chessTable.columns
-                                        ) {
-                                            queen.upperRightDiagonal.append((upperRightNextX, upperRightNextY))
-                                            upperRightNextX -= 1
-                                            upperRightNextY += 1
-                                        }
-                                        
-                                        //esquerda inferior
-                                        var lowerLeftNextX = chessTable.tiles[index].line + 1
-                                        var lowerLeftNextY = chessTable.tiles[index].column - 1
-                                        while (
-                                            lowerLeftNextX < chessTable.rows && lowerLeftNextY >= 0
-                                        ) {
-                                            queen.lowerLeftDiagonal.append((lowerLeftNextX, lowerLeftNextY))
-                                            lowerLeftNextX += 1
-                                            lowerLeftNextY -= 1
-                                        }
-                                        
-                                        //direita inferior
-                                        var lowerRightNextX = chessTable.tiles[index].line + 1
-                                        var lowerRightNextY = chessTable.tiles[index].column + 1
-                                        while (
-                                            lowerRightNextX < chessTable.columns && lowerRightNextY < chessTable.rows
-                                        ) {
-                                            queen.lowerRightDiagonal.append((lowerRightNextX, lowerRightNextY))
-                                            lowerRightNextX += 1
-                                            lowerRightNextY += 1
-                                        }
+                                        tapCountDiva += 1
+                                        print("tapCountDiva: ", tapCountDiva)
                                     }
-                                }
-                            }
-                    }
-                    .accessibilityLabel("Tabuleiro de xadrez \(chessTable.rows)x\(chessTable.columns)")
-                }
-                .shadow(radius: 2.5)
-                .padding()
-                .onAppear() {
-                    chessTable.createTiles()
-                }
-                HStack(spacing: 25) {
-                    Button("Clean") {
-                        UIDevice.vibrate()
-                        coordsX.removeAll()
-                        queens.removeAll()
-                        colisions.removeAll()
-                        resultSubmit = ""
-                        tapCount = 0
-                        tapToPlace = 0
-                        selectedImage = nil
-                        placedDivas.removeAll()
-                        for index in chessTable.tiles.indices {
-                            chessTable.tiles[index].image = nil
-                        }
-                    }
-//                    .shadow(radius: 50)
-                    .frame(width: 150, height: 50)
-                    .background(Color.red.opacity(0.8))
-                    .clipShape(.capsule)
-                    .tint(.white)
-                    .bold()
-                    .font(.title2)
-                    if tapToPlace == chessTable.rows {
-                        Button("Submit") {
-                            UIDevice.vibrate()
-                            let resultLineColumn = checkColisionLineColumn()
-                            let resultDiagonal = checkColisionDiagonals()
-                            print(resultDiagonal, resultLineColumn)
-                            
-                            withAnimation {
-                                if resultLineColumn == true || resultDiagonal == true {
-                                    isSolved = false
-                                    return resultSubmit = "Oops, that's not quite right... 😕"
-                                }
-                                if resultDiagonal == false || resultLineColumn == false {
-                                    isSolved = true
-                                    return resultSubmit = "Congrats, you solved it! 🥳"
-                                }
+                                    .frame(maxWidth: (selectedDiva == diva) ? diva.selectedSize.width : diva.defaultSize.width, maxHeight: (selectedDiva == diva) ?  diva.selectedSize.height : diva.defaultSize.height)
+                                    .animation(.easeInOut, value: selectedDiva)
+                                    .shadow(radius: 5)
+                                    .padding(.leading, diva.name == "rachel" ? 5 : 0)
                             }
                         }
-                        .disabled(tapCount == 7 ? true : false)
-                        .frame(width: 150, height: 50)
-                        .background(Color.blue.opacity(0.8))
-                        .clipShape(.capsule)
-                        .font(.title2)
-                        .tint(.white)
+                    }
+                    .fixedSize()
+                    if resultSubmit != "" {
+                        Text("\(resultSubmit)")
+                        .font(.title3)
+                        .foregroundStyle(isSolved ? .green : .red)
+                        .transition(isSolved ? .scale : .slide)
+                        .padding(.vertical, 2.5)
                         .bold()
                     }
+                    LazyVGrid(columns: Array(repeating: GridItem(.fixed(130), spacing: 0), count: chessTable.columns), spacing: 0) {
+                        ForEach(chessTable.tiles.indices, id: \.self) { index in
+                            Rectangle()
+                                .border(.black, width: 1)
+                                .aspectRatio(1, contentMode: .fill)
+                                .foregroundStyle((chessTable.tiles[index].line + chessTable.tiles[index].column) % 2 == 0 ? RadialGradient(colors: [.white, .purple], center: .center, startRadius: 5, endRadius: 90) : RadialGradient(colors: [Color(.verdeCiano), .mint], center: .center, startRadius: 10, endRadius: 90))
+                                .overlay {
+    //                                if let mark = chessTable.tiles[index].image {
+    //
+    //                                }
+                                    //codigo abaixo feito pelo chatgpt, ele tem mania de usar map
+                                    //iteracao desnecessaria
+                                    //aplicar overlay apenas no tile clicado, atribuindo a imagem correspondente
+                                    chessTable.tiles[index].image.map { image in
+                                        image
+                                            .resizable()
+                                            .scaledToFit()
+                                            .padding(.all, 5)
+                                    }
+                                }
+                                .border(hasCollision(index) ? .red : .clear, width: 5)
+                                .onTapGesture {
+                                    print("Tap")
+                                    
+                                    UIDevice.vibrate()
+                                    if selectedDiva != nil {
+//                                        if placedDivas.contains(selectedDiva?.name) {
+//                                            
+//                                        }
+                                        if let existentIndex = queens.firstIndex(where: {chessTable.tiles[index].line == $0.position.line && chessTable.tiles[index].column == $0.position.column}) {
+                                            chessTable.tiles[index].image = nil
+                                            queens.remove(at: existentIndex)
+                                            coordsX.remove(at: existentIndex)
+                                            tapToPlace -= 1
+                                            placedDivas.remove(selectedDiva?.name ?? "")
+                                            print("placedDivas if: ", placedDivas)
+                                            print("tapToPlace if: ",tapToPlace)
+                                            print(placedDivas)
+        //                                    print("antes do nil em selectedDiva", selectedDiva!.name)
+                                            
+        //                                    print("depois do nil em selectedDiva", selectedDiva!.name)
+                                        } else {
+                                            if tapToPlace <= chessTable.columns - 1 && !placedDivas.contains(selectedDiva?.name ?? "") {
+                                                let newQueen = Queen(
+                                                    position: (
+                                                        line: chessTable.tiles[index].line,
+                                                        column: chessTable.tiles[index].column
+                                                    )
+                                                )
+                                                newQueen.diva = selectedDiva
+                                                chessTable.tiles[index].image = selectedImage
+        //                                        chessTable.tiles[index].string = "♛"
+                                                coordsX.append((chessTable.tiles[index].line, chessTable.tiles[index].column))
+                                                queens.append(newQueen)
+                                                placedDivas.insert(selectedDiva?.name ?? "")
+                                                tapToPlace += 1
+                                                tapCountDiva -= 1
+                                                selectedImage = nil
+        //                                        print("antes do nil em selectedDiva", selectedDiva!)
+                                                selectedDiva = nil
+        //                                        print("depois do nil em selectedDiva", selectedDiva!)
+        //                                        selectedDiva?.image = nil
+                                                print("placedDivas else: ", placedDivas)
+        //                                        print(coordsX)
+                                                print("tapToPlace else: ",tapToPlace)
+                                            }
+                                    }
+                                        Task {
+                                            let queen = queens[queens.count - 1]
+                                            
+                                            //esquerda superior
+                                            var upperLeftNextX = chessTable.tiles[index].line - 1
+                                            var upperLeftNextY = chessTable.tiles[index].column - 1
+                                            while (
+                                                upperLeftNextX >= 0 && upperLeftNextY >= 0
+                                            ) {
+                                                queen.upperLeftDiagonal.append((upperLeftNextX, upperLeftNextY))
+                                                upperLeftNextX -= 1
+                                                upperLeftNextY -= 1
+                                            }
+                                            
+                                            //direita superior
+                                            var upperRightNextX = chessTable.tiles[index].line - 1
+                                            var upperRightNextY = chessTable.tiles[index].column + 1
+                                            while (
+                                                upperRightNextX >= 0 && upperRightNextY < chessTable.columns
+                                            ) {
+                                                queen.upperRightDiagonal.append((upperRightNextX, upperRightNextY))
+                                                upperRightNextX -= 1
+                                                upperRightNextY += 1
+                                            }
+                                            
+                                            //esquerda inferior
+                                            var lowerLeftNextX = chessTable.tiles[index].line + 1
+                                            var lowerLeftNextY = chessTable.tiles[index].column - 1
+                                            while (
+                                                lowerLeftNextX < chessTable.rows && lowerLeftNextY >= 0
+                                            ) {
+                                                queen.lowerLeftDiagonal.append((lowerLeftNextX, lowerLeftNextY))
+                                                lowerLeftNextX += 1
+                                                lowerLeftNextY -= 1
+                                            }
+                                            
+                                            //direita inferior
+                                            var lowerRightNextX = chessTable.tiles[index].line + 1
+                                            var lowerRightNextY = chessTable.tiles[index].column + 1
+                                            while (
+                                                lowerRightNextX < chessTable.columns && lowerRightNextY < chessTable.rows
+                                            ) {
+                                                queen.lowerRightDiagonal.append((lowerRightNextX, lowerRightNextY))
+                                                lowerRightNextX += 1
+                                                lowerRightNextY += 1
+                                            }
+                                        }
+                                    }
+                                    
+                                    else {
+                                        let currentPosition = (chessTable.tiles[index].line, chessTable.tiles[index].column)
+                                        if let selectedQueen = queens.first(where: { queen in
+                                            queen.position == currentPosition
+                                        }) {
+                                            removeDivaFromBoard(selectedQueen.diva, at: index)
+                                        }
+                                    }
+                                }
+                        }
+                        .accessibilityLabel("Tabuleiro de xadrez \(chessTable.rows)x\(chessTable.columns)")
+                    }
+                    .shadow(radius: 2.5)
+                    .fixedSize()
+                    .padding()
+                    .onAppear() {
+                        chessTable.createTiles()
+                    }
+                    HStack(spacing: 25) {
+                        Button("Clean") {
+                            UIDevice.vibrate()
+                            coordsX.removeAll()
+                            queens.removeAll()
+                            colisions.removeAll()
+                            resultSubmit = ""
+                            tapCount = 0
+                            tapToPlace = 0
+                            selectedImage = nil
+                            placedDivas.removeAll()
+                            for index in chessTable.tiles.indices {
+                                chessTable.tiles[index].image = nil
+                            }
+                        }
+    //                    .shadow(radius: 50)
+                        .frame(width: 150, height: 50)
+                        .background(Color.red.opacity(0.8))
+                        .clipShape(.capsule)
+                        .tint(.white)
+                        .bold()
+                        .font(.title2)
+                        if tapToPlace == chessTable.rows {
+                            Button("Submit") {
+                                UIDevice.vibrate()
+                                let resultLineColumn = checkColisionLineColumn()
+                                let resultDiagonal = checkColisionDiagonals()
+                                print(resultDiagonal, resultLineColumn)
+                                
+                                withAnimation {
+                                    if resultLineColumn == true || resultDiagonal == true {
+                                        isSolved = false
+                                        return resultSubmit = "Oops, that's not quite right... 😕"
+                                    }
+                                    if resultDiagonal == false || resultLineColumn == false {
+                                        isSolved = true
+                                        return resultSubmit = "Congrats, you solved it! 🥳"
+                                    }
+                                }
+                            }
+                            .disabled(tapCount == 7 ? true : false)
+                            .frame(width: 150, height: 50)
+                            .background(Color.blue.opacity(0.8))
+                            .clipShape(.capsule)
+                            .font(.title2)
+                            .tint(.white)
+                            .bold()
+                        }
+                    }
+                    .padding(.top, 1.5)
                 }
-                .padding(.top, 1.5)
             }
+            .ignoresSafeArea()
+            .scaledToFill()
+            .previewInterfaceOrientation(.landscapeRight)
         }
         .ignoresSafeArea()
         .scaledToFill()
+        .navigationBarBackButtonHidden(true)
         .previewInterfaceOrientation(.landscapeRight)
     }
+    
+    private func removeDivaFromBoard(_ diva: Diva?, at index: Int) {
+        guard let diva = diva else { return }
+        chessTable.tiles[index].image = nil
+        placedDivas.remove(diva.name)
+        print(placedDivas)
+//        if placedDivas.contains(diva.name){
+//            print("A diva ta no tabuleiro")
+//        }
+    }
+}
+
+#Preview {
+    ContentView()
 }

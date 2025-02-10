@@ -12,6 +12,9 @@ struct DivaBonk02: View {
         ZStack {
             RadialGradient(colors: [Color(.azul), Color(.rosa)], center: .center, startRadius: 500, endRadius: 100)
             Image(.esbarro2)
+            Button("Next") {
+                
+            }
         }
         .ignoresSafeArea()
         .previewInterfaceOrientation(.landscapeRight)
