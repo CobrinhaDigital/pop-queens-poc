@@ -176,7 +176,7 @@ struct BonkCarrousel: View {
                 }
                 .navigationBarBackButtonHidden(true)
                 .navigationDestination(isPresented: $navigateToNext) {
-                    ContentView()
+                    MechanicsTutorial()
                 }
                 .position(x: 583, y: 400)
                 .frame(maxWidth: 100, maxHeight: 80)

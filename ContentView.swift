@@ -106,7 +106,7 @@ struct ContentView: View {
                                     }
                                     .frame(maxWidth: (selectedDiva == diva) ? diva.selectedSize.width : diva.defaultSize.width, maxHeight: (selectedDiva == diva) ?  diva.selectedSize.height : diva.defaultSize.height)
                                     .animation(.easeInOut, value: selectedDiva)
-                                    .shadow(radius: 5)
+                                    .shadow(color: .white ,radius: 5)
                                     .padding(.leading, diva.name == "rachel" ? 5 : 0)
                             }
                         }

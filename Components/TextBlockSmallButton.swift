@@ -7,8 +7,9 @@
 import SwiftUI
 
 struct TextBlockSmallButton: View {
+    @State var text: String
     var body: some View {
-        Button("Next") {
+        Button(text) {
 
         }
         .navigationBarBackButtonHidden(true)
@@ -31,6 +32,6 @@ struct TextBlockSmallButton: View {
 #Preview {
     ZStack {
         Color.blue
-        TextBlockSmallButton()
+        TextBlockSmallButton(text: "Next")
     }
 }

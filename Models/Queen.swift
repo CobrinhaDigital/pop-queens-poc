@@ -16,8 +16,9 @@ class Queen: Equatable {
     let position: (line: Int, column: Int)
     var diva: Diva?
     
-    init(position: (line: Int, column: Int)) {
+    init(position: (line: Int, column: Int), diva: Diva? = nil) {
         self.position = position
+        self.diva = diva
     }
     
     //aqui eu verifico se existe uma rainha na diagonal sendo analisada
