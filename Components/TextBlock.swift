@@ -25,21 +25,6 @@ struct TextBlock: View {
                 .frame(maxWidth: 790, maxHeight: 130)
                 .font(.comfortaa(size: 17))
                 .foregroundStyle(.black)
-            ZStack {
-                RoundedRectangle(cornerRadius: 5)
-                    .frame(maxWidth: 117, maxHeight: 57)
-                RoundedRectangle(cornerRadius: 2.5)
-                    .frame(maxWidth: 112, maxHeight: 52)
-                    .foregroundStyle(.white)
-                    .overlay(Button("Next") {
-                        
-                    }
-                        .foregroundStyle(.black)
-                        .font(.comfortaa(size: 17))
-                )
-            }
-            .padding(.leading, 800)
-            .padding(.top, 130)
         }
     }
 }

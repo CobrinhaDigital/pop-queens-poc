@@ -25,6 +25,8 @@ struct ContentView: View {
     @State var tapCountDiva: Int = 0
     @State var tapCountDivaOnBoard: [Diva.ID : Int] = [:]
     @State var placedDivas: Set<String> = []
+    @State var giveUpAlert: Bool = false
+    @State var navigateToNext: Bool = false
 
     let divas: [Diva] = .init([
         Diva(name: "rita", image: Image(.ritaFace), defaultSize: CGSize(width: 95, height: 93), selectedSize: CGSize(width: 110, height: 105)),
@@ -106,7 +108,6 @@ struct ContentView: View {
                                     }
                                     .frame(maxWidth: (selectedDiva == diva) ? diva.selectedSize.width : diva.defaultSize.width, maxHeight: (selectedDiva == diva) ?  diva.selectedSize.height : diva.defaultSize.height)
                                     .animation(.easeInOut, value: selectedDiva)
-                                    .shadow(color: .white ,radius: 5)
                                     .padding(.leading, diva.name == "rachel" ? 5 : 0)
                             }
                         }
@@ -252,6 +253,24 @@ struct ContentView: View {
                         chessTable.createTiles()
                     }
                     HStack(spacing: 25) {
+                        Button("Give up?") {
+                            giveUpAlert.toggle()
+                        }
+                        .font(.comfortaaBold(size: 20))
+                        .frame(width: 150, height: 50)
+                        .background(Color.red.opacity(0.8))
+                        .clipShape(.capsule)
+                        .shadow(radius: 2.5)
+                        .tint(.white)
+                        .alert("Are you sure?", isPresented: $giveUpAlert) {
+                            Button("Yes") {
+                                
+                            }
+                            Button("No", role: .cancel) {
+                                
+                            }
+                        }
+                        NavigationLink("", destination: h1(), isActive: $navigateToNext)
                         Button("Clean") {
                             UIDevice.vibrate()
                             coordsX.removeAll()
@@ -268,11 +287,12 @@ struct ContentView: View {
                         }
     //                    .shadow(radius: 50)
                         .frame(width: 150, height: 50)
-                        .background(Color.red.opacity(0.8))
+                        .background(Color.blue.opacity(0.8))
                         .clipShape(.capsule)
                         .tint(.white)
+                        .shadow(radius: 5)
                         .bold()
-                        .font(.title2)
+                        .font(.comfortaaBold(size: 20))
                         if tapToPlace == chessTable.rows {
                             Button("Submit") {
                                 UIDevice.vibrate()
@@ -293,9 +313,10 @@ struct ContentView: View {
                             }
                             .disabled(tapCount == 7 ? true : false)
                             .frame(width: 150, height: 50)
-                            .background(Color.blue.opacity(0.8))
+                            .background(Color.green.opacity(0.8))
                             .clipShape(.capsule)
-                            .font(.title2)
+                            .shadow(radius: 2.5)
+                            .font(.comfortaaBold(size: 20))
                             .tint(.white)
                             .bold()
                         }

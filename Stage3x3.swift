@@ -31,7 +31,7 @@ struct Stage3x3: View {
                         ])
                     }
                     .overlay(
-                        Text("minha pica veiuda")
+                        Text("aaaa")
                     )
             }
         }

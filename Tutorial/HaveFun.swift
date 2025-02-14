@@ -45,9 +45,27 @@ struct HaveFun: View {
                             .padding(.leading, 10)
                     }
                     .padding(.vertical, 80)
-                    TextBlockButton(text: "Play").navigationDestination(isPresented: $navigateToNext) {
+                    Button("Play") {
+                        navigateToNext.toggle()
+                    }
+                    .navigationBarBackButtonHidden(true)
+                    .frame(maxWidth: 200, maxHeight: 60)
+                    .padding(.horizontal, 20)
+                    .foregroundStyle(.black)
+                    .font(.comfortaa(size: 30))
+                    .padding(.vertical, 10)
+                    .navigationDestination(isPresented: $navigateToNext) {
                         ContentView()
                     }
+                    .background(ZStack {
+                        RoundedRectangle(cornerRadius: 8)
+                            .fill(Color(.black))
+                            .shadow(radius: 5)
+                            .frame(maxWidth: 182, maxHeight: 60)
+                        RoundedRectangle(cornerRadius: 8)
+                            .fill(Color(.white))
+                            .frame(maxWidth: 180, maxHeight: 58)
+                    })
                 }
             }
         }
