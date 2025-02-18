@@ -140,7 +140,7 @@ struct ContentView: View {
                                 }
                                 .border(hasCollision(index) ? .red : .clear, width: 5)
                                 .onTapGesture {
-                                    print("Tap")
+//                                    print("Tap")
                                     
                                     UIDevice.vibrate()
                                     if selectedDiva != nil {
@@ -151,7 +151,8 @@ struct ContentView: View {
                                             chessTable.tiles[index].image = nil
                                             queens.remove(at: existentIndex)
                                             coordsX.remove(at: existentIndex)
-                                            tapToPlace -= 1
+                                            tapToPlace -= 1 //decrementava antes
+                                            print("decremento no else: ", tapCount)
                                             placedDivas.remove(selectedDiva?.name ?? "")
                                             print("placedDivas if: ", placedDivas)
                                             print("tapToPlace if: ",tapToPlace)
@@ -252,7 +253,7 @@ struct ContentView: View {
                     .onAppear() {
                         chessTable.createTiles()
                     }
-                    HStack(spacing: 25) {
+                    HStack {
                         Button("Give up?") {
                             giveUpAlert.toggle()
                         }
@@ -290,10 +291,10 @@ struct ContentView: View {
                         .background(Color.blue.opacity(0.8))
                         .clipShape(.capsule)
                         .tint(.white)
-                        .shadow(radius: 5)
+                        .shadow(radius: 2.5)
                         .bold()
                         .font(.comfortaaBold(size: 20))
-                        if tapToPlace == chessTable.rows {
+                        if tapToPlace >= chessTable.rows {
                             Button("Submit") {
                                 UIDevice.vibrate()
                                 let resultLineColumn = checkColisionLineColumn()

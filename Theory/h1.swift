@@ -3,17 +3,23 @@
 //  pop-queens
 //
 //  Created by Beatriz Peixoto on 13/02/25.
-//
+//enum de views
 import SwiftUI
 import Foundation
 
 struct h1: View {
     @State var navigateToNext: Bool = false
-    @State var transitionPhase: Int = 0
+//    @State var transitionPhase: Int = 0
+//    var currentView = DivasOnStageView()
     
-    func componentTransitions () {
-        
-    }
+//    func componentsTransition() {
+//        switch transitionPhase {
+//        case 0:
+//            currentView = DivasOnStageView()
+//        default:
+//            currentView = DivasFacesTest()
+//        }
+//    }
     
     var body: some View {
         ZStack {
@@ -22,13 +28,10 @@ struct h1: View {
                 .scaledToFill()
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             VStack(spacing: -20) {
-                Image(.startScreen)
-                    .resizable()
-                    .scaledToFit()
-                    .padding(.horizontal, 100)
-                    .padding(.leading, 30)
-                    .padding(.bottom, 100)
-                    .shadow(radius: 10)
+                NavigationStack {
+                    DivasOnStageView()
+                        
+                }
                 TextBlock(text: "The problem faced by the divas goes waaaaay back...")
             }
             .padding(.top, 50)
@@ -39,7 +42,7 @@ struct h1: View {
                     .frame(maxWidth: 112, maxHeight: 52)
                     .foregroundStyle(.white)
                     .overlay(Button("Next") {
-                        transitionPhase += 1
+                        
                     }
                         .foregroundStyle(.black)
                         .font(.comfortaa(size: 17))
@@ -48,9 +51,32 @@ struct h1: View {
             .padding(.leading, 790)
             .padding(.top, 670)
         }
+        .onAppear() {
+            
+        }
+    }
+}
+
+struct test: View {
+    var body: some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: 5)
+                .frame(maxWidth: 117, maxHeight: 57)
+            RoundedRectangle(cornerRadius: 2.5)
+                .frame(maxWidth: 112, maxHeight: 52)
+                .foregroundStyle(.white)
+                .overlay(Button("Next") {
+                    
+                }
+                    .foregroundStyle(.black)
+                    .font(.comfortaa(size: 17))
+            )
+        }
+        .padding(.leading, 790)
+        .padding(.top, 670)
     }
 }
 
 #Preview {
-    h1()
+    test()
 }

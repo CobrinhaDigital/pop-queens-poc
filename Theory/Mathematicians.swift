@@ -12,13 +12,20 @@ struct MathematiciansView: View {
         VStack {
             HStack(spacing: 180) {
                 Image(.maxBezzel3)
-                    .padding(.leading, 200)
+                    .resizable()
+                    .frame(maxWidth: 250, maxHeight: 280)
                 Image(.siegmundGüntherFranzNeumayerNeumayerFranzBtv1B8453112XCropped2)
+                    .resizable()
+                    .frame(maxWidth: 240, maxHeight: 285)
             }
             .shadow(radius: 5)
             HStack(spacing: 150) {
                 Image(.carlFriedrichGauss3)
+                    .resizable()
+                    .frame(maxWidth: 240, maxHeight: 285)
                 Image(.jamesWhitbreadLeeGlaisher2)
+                    .resizable()
+                    .frame(maxWidth: 240, maxHeight: 285)
                     .padding(.trailing, 200)
             }
             .shadow(radius: 5)

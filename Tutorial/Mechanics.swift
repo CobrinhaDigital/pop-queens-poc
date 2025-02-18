@@ -59,7 +59,7 @@ struct MechanicsTutorial: View {
                 }
                 VStack {
                     Text("Let's practice!")
-                        .font(.comfortaaBold(size: 34))
+                        .font(.comfortaaBold(size: 45))
                         .padding(.bottom, 5)
                         .fixedSize()
                     Text(text)
@@ -113,14 +113,14 @@ struct MechanicsTutorial: View {
 //    ////                                diva: divaTutorial.diva
 //    ////                            )
 //    ////                        )
-//    //                        queens.forEach { queen in
-//    //                            if let index = chessTable.tiles.firstIndex(where: { tile in
-//    //                                tile.line == queen.position.line && tile.column == queen.position.column
-//    //                            }) {
-//    //                                chessTable.tiles[index].image = queen.diva?.image
-//    //
-//    //                            }
-//    //                        }
+//                            queens.forEach { queen in
+//                                if let index = chessTable.tiles.firstIndex(where: { tile in
+//                                    tile.line == queen.position.line && tile.column == queen.position.column
+//                                }) {
+//                                    chessTable.tiles[index].image = queen.diva?.image
+//    
+//                                }
+//                            }
 //                        }
 //    //                        if divaTutorial.isDivaSelected != false {
 //    //                            withAnimation {
@@ -158,7 +158,7 @@ struct MechanicsTutorial: View {
                     navigateToNext.toggle()
                 }
                 .navigationDestination(isPresented: $navigateToNext) {
-                    ContentView()
+                    DirectionsTutorial()
                 }
                 .foregroundStyle(.black)
                 .padding(.leading, 950)
