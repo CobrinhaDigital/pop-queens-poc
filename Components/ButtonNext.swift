@@ -8,7 +8,7 @@ import Foundation
 import SwiftUI
 
 struct ButtonNext: View {
-    var action: () -> Void
+    //    var action: () -> Void
     var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 8)
@@ -16,8 +16,8 @@ struct ButtonNext: View {
             RoundedRectangle(cornerRadius: 6)
                 .foregroundStyle(.white)
                 .frame(maxWidth: 95, maxHeight: 50)
-            Button(action: action) {
-                Text("Next")
+            Button("Next") {
+                
             }
             .font(.comfortaa(size: 17))
             .tint(.black)
@@ -28,6 +28,6 @@ struct ButtonNext: View {
 #Preview {
     ZStack {
         Color.green
-//        ButtonNext()
+        ButtonNext()
     }
 }

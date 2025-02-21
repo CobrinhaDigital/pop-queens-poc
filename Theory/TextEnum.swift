@@ -8,19 +8,10 @@ import SwiftUI
 import Foundation
 
 enum TextEnum {
-    case h1
-    case h2
-    case h3
-    case h4
-    case h5
-    case h6
-    case h7
-    case h8
-    case h9
-    case h10
+    case h1, h2, h3, h4, h5, h6, h7, h8, h9, h10, h11, h12, h13, h14, h15, h16, h17, h18, h19
     
     func text() -> String {
-        @State var text: String = ""
+        var text: String = ""
         switch self {
         case .h1:
             text = "The problem faced by the divas goes waaaay back..."

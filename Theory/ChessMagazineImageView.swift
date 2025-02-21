@@ -13,6 +13,7 @@ struct ChessMagazineImageView: View {
             .resizable()
             .scaledToFit()
             .frame(maxWidth: 450, maxHeight: 550)
+            .padding(.bottom, 100)
     }
 }
 

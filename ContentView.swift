@@ -114,12 +114,20 @@ struct ContentView: View {
                     }
                     .fixedSize()
                     if resultSubmit != "" {
-                        Text("\(resultSubmit)")
-                        .font(.title3)
+                        ZStack {
+                            RoundedRectangle(cornerRadius: 8)
+                                .frame(maxWidth: 315, maxHeight: 45)
+                            RoundedRectangle(cornerRadius: 6)
+                                .frame(maxWidth: 310, maxHeight: 40)
+                                .foregroundStyle(.white)
+                            Text(resultSubmit)
+                                .font(.comfortaaBold(size: 17))
+                                
+//                                .foregroundStyle(Color.black)
+                        }
                         .foregroundStyle(isSolved ? .green : .red)
                         .transition(isSolved ? .scale : .slide)
                         .padding(.vertical, 2.5)
-                        .bold()
                     }
                     LazyVGrid(columns: Array(repeating: GridItem(.fixed(130), spacing: 0), count: chessTable.columns), spacing: 0) {
                         ForEach(chessTable.tiles.indices, id: \.self) { index in
@@ -147,20 +155,28 @@ struct ContentView: View {
 //                                        if placedDivas.contains(selectedDiva?.name) {
 //                                            
 //                                        }
-                                        if let existentIndex = queens.firstIndex(where: {chessTable.tiles[index].line == $0.position.line && chessTable.tiles[index].column == $0.position.column}) {
+                                        // adicionar uma segunda diva depois de remover outra na mesma posicao
+                                        if let existentIndex = queens.firstIndex(where: {
+                                            chessTable.tiles[index].line == $0.position.line && chessTable.tiles[index].column == $0.position.column
+                                        }) {
                                             chessTable.tiles[index].image = nil
+                                            print("Antes de remover: ", queens)
                                             queens.remove(at: existentIndex)
+                                            print("Depois de remover: ", queens)
                                             coordsX.remove(at: existentIndex)
+                                            
                                             tapToPlace -= 1 //decrementava antes
                                             print("decremento no else: ", tapCount)
                                             placedDivas.remove(selectedDiva?.name ?? "")
                                             print("placedDivas if: ", placedDivas)
                                             print("tapToPlace if: ",tapToPlace)
-                                            print(placedDivas)
+                                            print("Printando placedDivas em if: ", placedDivas)
         //                                    print("antes do nil em selectedDiva", selectedDiva!.name)
                                             
         //                                    print("depois do nil em selectedDiva", selectedDiva!.name)
-                                        } else {
+                                        }
+                                        //else adiciona uma diva ao tabuleiro
+                                        else {
                                             if tapToPlace <= chessTable.columns - 1 && !placedDivas.contains(selectedDiva?.name ?? "") {
                                                 let newQueen = Queen(
                                                     position: (
@@ -237,6 +253,7 @@ struct ContentView: View {
                                     
                                     else {
                                         let currentPosition = (chessTable.tiles[index].line, chessTable.tiles[index].column)
+                                        tapToPlace -= 1
                                         if let selectedQueen = queens.first(where: { queen in
                                             queen.position == currentPosition
                                         }) {
@@ -253,7 +270,7 @@ struct ContentView: View {
                     .onAppear() {
                         chessTable.createTiles()
                     }
-                    HStack {
+                    HStack(spacing: 10) {
                         Button("Give up?") {
                             giveUpAlert.toggle()
                         }
@@ -265,13 +282,15 @@ struct ContentView: View {
                         .tint(.white)
                         .alert("Are you sure?", isPresented: $giveUpAlert) {
                             Button("Yes") {
-                                
+                                navigateToNext.toggle()
+                            }
+                            .navigationDestination(isPresented: $navigateToNext) {
+                                h1()
                             }
                             Button("No", role: .cancel) {
                                 
                             }
                         }
-                        NavigationLink("", destination: h1(), isActive: $navigateToNext)
                         Button("Clean") {
                             UIDevice.vibrate()
                             coordsX.removeAll()
@@ -339,6 +358,7 @@ struct ContentView: View {
         guard let diva = diva else { return }
         chessTable.tiles[index].image = nil
         placedDivas.remove(diva.name)
+        queens.removeAll(where: {$0.diva == diva})
         print(placedDivas)
     }
 }

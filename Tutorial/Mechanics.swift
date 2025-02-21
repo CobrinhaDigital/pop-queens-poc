@@ -18,7 +18,6 @@ struct MechanicsTutorial: View {
     @State var divaTutorial: DivaTutorial = DivaTutorial()
     @State var chessTable: ChessTableModel = .init(rows: 4, columns: 4)
     @State var queens: [Queen] = []
-    
     @State var phase: Int = 0
     @State var text: String = "Tap the diva to select her"
     

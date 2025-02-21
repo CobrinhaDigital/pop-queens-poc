@@ -30,6 +30,7 @@ struct MathematiciansView: View {
             }
             .shadow(radius: 5)
         }
+        .padding(.bottom, 100)
     }
 }
 
