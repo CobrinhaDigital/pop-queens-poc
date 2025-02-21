@@ -14,6 +14,10 @@ enum ViewsTheoryPhases {
     case h4
     case h5
     case h6
+    case h7
+    case h8
+    case h9
+    case h10
     
     //se esse decorator os cases so podem ser da mesma tela
     @MainActor @ViewBuilder
@@ -30,9 +34,11 @@ enum ViewsTheoryPhases {
         case .h5:
             OutOfStates()
         case .h6:
-            withAnimation {
-                ThinkingEmojiBig()
-            }
+            ThinkingEmojiBig()
+        case .h7:
+            AvailableSpaces()
+        case .h8:
+            EmptyStage()
         default:
             Text("bi sexo uau")
         }
