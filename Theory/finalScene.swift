@@ -9,6 +9,8 @@ import Foundation
 
 struct FinalScene: View {
     @State var navigateToNext: Bool = false
+    @State var showCredits: Bool = false
+    
     var body: some View {
         NavigationStack {
             ZStack {
@@ -53,6 +55,16 @@ struct FinalScene: View {
                     .font(.comfortaaBold(size: 50))
                     .padding(.top, 580)
                     .shadow(radius: 1.5)
+                Button("""
+                    Made with ♥︎ by
+                                Beatriz Peixoto
+                """) {
+                    showCredits.toggle()
+                }
+                .font(.comfortaa(size: 17))
+                .position(x: 1060, y: 1000)
+                .tint(.black)
+                .padding(.bottom, 20)
                 ZStack {
                     RoundedRectangle(cornerRadius: 8)
                         .frame(maxWidth: 215, maxHeight: 50)
@@ -71,6 +83,7 @@ struct FinalScene: View {
                 }
                 .padding(.top, 720)
             }
+            .padding(.bottom, 50)
         }
     }
 }

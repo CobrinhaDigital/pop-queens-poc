@@ -23,7 +23,7 @@ struct HaveFun: View {
                     Text("Have fun!")
                         .font(.comfortaaBold(size: 40))
                         .padding(.bottom, 5)
-                    Text("Don't worry, you can look it up again 🩷")
+                    Text("The divas wish you luck 🩷")
                         .font(.comfortaa(size: 20))
                     HStack {
                         Image(.ritaFace)

@@ -1,4 +1,5 @@
 import UIKit
+import AVFoundation
 import SwiftUI
 
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -12,9 +13,12 @@ struct MyApp: App {
     @UIApplicationDelegateAdaptor var appDelegate: AppDelegate
     var body: some Scene {
         WindowGroup {
-            StartView()
-                .previewInterfaceOrientation(.landscapeLeft)
 //            ContentView()
+            StartView()
+                .onAppear {
+                    AudioManager.shared.playAudio()
+                }
+                .previewInterfaceOrientation(.landscapeLeft)
         }
     }
 }

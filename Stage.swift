@@ -12,6 +12,8 @@ struct Stage: View {
     @Binding var chessTable: ChessTableModel
     //preencher lista com posicoes predeterminadas de queens
     @Binding var queens: [Queen]
+//    @Binding var queensPlaces: [Queen]?
+//    @Binding var tileBorderColor: ChessTileModel?
     
     @State var colisions: [(line: Int, column: Int)] = []
     @State var divasPositions: [Int] = [1, 3, 5, 7]
@@ -39,6 +41,7 @@ struct Stage: View {
                                     newQueen.diva = diva
                                     queens.append(newQueen)
                                     chessTable.tiles[index].image = diva.image
+//                                    queensPlaces?.append(newQueen.position, newQueen.diva)
                                 }
                                 //tirar boneca do canto
                             } else {

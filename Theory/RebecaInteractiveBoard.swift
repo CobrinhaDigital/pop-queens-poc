@@ -15,7 +15,7 @@ struct RebecaInteractiveBoard: View {
     @State var chessTable: ChessTableModel = .init(rows: 4, columns: 4)
     @State var isDivaOnBoard: Bool = false
     @State var isDivaSelected: Bool = false
-    @State var diva: Diva = Diva(name: "rebeca", image: Image(.rebecaFace), defaultSize: CGSize(width: 140, height: 150), selectedSize: CGSize(width: 160, height: 170))
+    @State var diva: Diva = Diva(name: "rebeca", image: Image(.rebecaFace), defaultSize: CGSize(width: 160, height: 150), selectedSize: CGSize(width: 180, height: 170))
     @State var queens: [Queen] = [
         Queen(position: (1, 3), diva: Diva(name: "rita", image: Image(.ritaFace), defaultSize: CGSize(width: 100, height: 100), selectedSize: CGSize(width: 100, height: 100))),
         Queen(position: (2, 0), diva: Diva(name: "rachel", image: Image(.rachelFace), defaultSize: CGSize(width: 100, height: 100), selectedSize: CGSize(width: 100, height: 100))),
@@ -53,7 +53,9 @@ struct RebecaInteractiveBoard: View {
                             .font(.comfortaaBold(size: 17))
                             .foregroundStyle(.black)
                             .position(x: 110, y: 280)
+                            
                     )
+                    .padding(.top, 100)
             }
             if isDivaOnBoard == false {
                diva.image
@@ -64,6 +66,7 @@ struct RebecaInteractiveBoard: View {
                     .frame(maxWidth: isDivaSelected ? diva.selectedSize.width : diva.defaultSize.width, maxHeight: isDivaSelected ? diva.selectedSize.height : diva.defaultSize.height)
                     .animation(.easeInOut, value: isDivaSelected)
                     .position(x: 300, y: 400)
+                    .padding(.top, 100)
             }
         }
     }
