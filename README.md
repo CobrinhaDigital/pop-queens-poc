@@ -2,5 +2,5 @@
 Colocar N rainhas num tabuleiro de xadrez NxN de maneira que elas não possam se atacar 
 
 ## ⚠️ AVISO ⚠️
-* a branch main não tem o trabalho final, tudo está na refactor 
-* código muito merda, leia ao seu próprio risco 
+* código muito bosta, leia ao seu próprio risco
+* organização de pastas é pior ainda 
