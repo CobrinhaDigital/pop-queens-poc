@@ -1,0 +1,21 @@
+{
+  "images" : [
+    {
+      "filename" : "Siegmund_Günther_-_Franz_Neumayer_Neumayer_Franz_btv1b8453112x_(cropped) 2.png",
+      "idiom" : "universal",
+      "scale" : "1x"
+    },
+    {
+      "idiom" : "universal",
+      "scale" : "2x"
+    },
+    {
+      "idiom" : "universal",
+      "scale" : "3x"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

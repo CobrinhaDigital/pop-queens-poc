@@ -27,18 +27,20 @@ let package = Package(
                 .phone
             ],
             supportedInterfaceOrientations: [
-                .portrait,
                 .landscapeRight,
-                .landscapeLeft,
-                .portraitUpsideDown(.when(deviceFamilies: [.pad]))
-            ]
+                .landscapeLeft
+            ],
+            appCategory: .boardGames
         )
     ],
     targets: [
         .executableTarget(
             name: "AppModule",
-            path: "."
+            path: ".",
+            resources: [
+                .process("Resources")
+            ]
         )
     ],
-    swiftLanguageVersions: [.version("6")]
+    swiftLanguageVersions: [.v6]
 )
